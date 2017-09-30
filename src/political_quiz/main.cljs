@@ -6,17 +6,15 @@
 
 (enable-console-print!)
 
-(defonce app-state (atom {:text "Hello world!"
-                          :step 0
-                          :questions [{:question-text "hej1" :importance nil :answer nil}
-                                      {:question-text "hej2" :importance nil :answer nil}
-                                      {:question-text "hej3" :importance nil :answer nil}
-                                      {:question-text "hej4" :importance nil :answer nil}
-                                      {:question-text "hej5" :importance nil :answer nil}]}))
+(defonce app-state (atom {:text      "Superrolig politikquiz!"
+                          :step      0
+                          :questions [{:question-text "Jag föredrar ketchup framför senap på min korv" :importance nil :answer nil}
+                                      {:question-text "Äppelpaj är den godaste pajen" :importance nil :answer nil}
+                                      {:question-text "Två personer kan få plats på en flytande dörr" :importance nil :answer nil}
+                                      {:question-text "Episod I är den bästa Star Wars-filmen" :importance nil :answer nil}
+                                      {:question-text "Vi borde använda mer Clojure(script)" :importance nil :answer nil}]}))
 
 (defonce eventchannel (chan))
-
-;; (swap! app-state assoc :checked {:name (:name (:data event)) :value (:value (:data event))})
 
 (go
   (while true
@@ -32,16 +30,20 @@
                                        q
                                        (if (= name "importance")
                                          (assoc q :importance value)
-                                         (assoc q :answer value)))) (:questions state))))
+                                         (assoc q :answer value))))
+                                   (:questions state))))
+
         :progress-click (if (= (:data event) "forward")
                           (swap! app-state update :step inc)
                           (swap! app-state update :step dec))
-        (println "Unknown event")))))
 
-(defn hello-world []
+        :finish-click (swap! app-state assoc :step (count (:questions @app-state)))
+        (println "Unknown event: " (:type event))))))
+
+(defn app []
   (let [state @app-state]
     [:div
-     [comp/questionnaire state eventchannel {:questions (map :question-text (:questions state))}]]))
+     [comp/canvas state eventchannel]]))
 
-(reagent/render-component [hello-world]
+(reagent/render-component [app]
                           (. js/document (getElementById "app")))
