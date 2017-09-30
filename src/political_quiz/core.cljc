@@ -42,11 +42,11 @@
            (is= (calculate-question-error {:user-opinion-list  user-opinion-test-list
                                            :party-opinion-list party-opinion-test-list
                                            :index              2})
-                (* 2 (/ 6 17) (/ 5 16)))
+                (* 2 (+ (/ 6 17) (/ 5 16))))
            (is= (calculate-question-error {:user-opinion-list  user-opinion-test-list
                                            :party-opinion-list party-opinion-test-list
                                            :index              4})
-                (* 2 (/ 1 17) (/ 2 16))))}
+                (* 2 (+ (/ 1 17) (/ 2 16)))))}
   [{user-opinion-list :user-opinion-list party-opinion-list :party-opinion-list index :index}]
   ;; Function potentially needing answers, weights and relative weights (depending on model)
   )
@@ -58,10 +58,10 @@
            (is= (calculate-total-error {:user-opinion-list  user-opinion-test-list
                                         :party-opinion-list party-opinion-test-list})
                 (+ 0
-                   (* 3 (/ 5 17) (/ 3 16))
-                   (* 2 (/ 6 17) (/ 5 16))
-                   (* 2 (/ 2 17) (/ 3 16))
-                   (* 2 (/ 1 17) (/ 2 16)))))}
+                   (* 3 (+ (/ 5 17) (/ 3 16)))
+                   (* 2 (+ (/ 6 17) (/ 5 16)))
+                   (* 2 (+ (/ 2 17) (/ 3 16)))
+                   (* 2 (+ (/ 1 17) (/ 2 16))))))}
   [{user-opinion-list :user-opinion-list party-opinion-list :party-opinion-list}]
   ;; Sum of all question errors
   )
@@ -72,10 +72,10 @@
            (is= (calculate-user-party-agreement {:user-opinion-list  user-opinion-test-list
                                                  :party-opinion-list party-opinion-test-list})
                 (- 100 (* 10 (+ 0
-                                (* 3 (/ 5 17) (/ 3 16))
-                                (* 2 (/ 6 17) (/ 5 16))
-                                (* 2 (/ 2 17) (/ 3 16))
-                                (* 2 (/ 1 17) (/ 2 16))))))
+                                (* 3 (+ (/ 5 17) (/ 3 16)))
+                                (* 2 (+ (/ 6 17) (/ 5 16)))
+                                (* 2 (+ (/ 2 17) (/ 3 16)))
+                                (* 2 (+ (/ 1 17) (/ 2 16)))))))
            (error? (calculate-user-party-agreement {:user-opinion-list  (conj user-opinion-test-list {:answer 1 :weight 1})
                                                     :party-opinion-list party-opinion-test-list})))}
   [{user-opinion-list :user-opinion-list party-opinion-list :party-opinion-list}]
