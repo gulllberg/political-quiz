@@ -28,8 +28,12 @@
            (is= (calculate-relative-weight party-opinion-test-list 4)
                 (/ 2 16)))}
   [opinion-list index]
-  ;; Needs nothing
-  )
+  (let [weight (:weight (nth opinion-list index))
+        total-weight (reduce (fn [sum opinion]
+                               (+ sum (:weight opinion)))
+                             0
+                             opinion-list)]
+    (/ weight total-weight)))
 
 ;; Should have 3 versions, this is model 1
 (defn- calculate-question-error
@@ -48,8 +52,12 @@
                                            :index              4})
                 (* 2 (+ (/ 1 17) (/ 2 16)))))}
   [{user-opinion-list :user-opinion-list party-opinion-list :party-opinion-list index :index}]
-  ;; Function potentially needing answers, weights and relative weights (depending on model)
-  )
+  (let [user-answer (:answer (nth user-opinion-list index))
+        party-answer (:answer (nth party-opinion-list index))
+        user-relative-weight (calculate-relative-weight user-opinion-list index)
+        party-relative-weight (calculate-relative-weight party-opinion-list index)]
+    (* (Math/abs (- user-answer party-answer))
+       (+ user-relative-weight party-relative-weight))))
 
 ;; Should have 3 versions, this is model 1
 (defn- calculate-total-error
@@ -63,8 +71,13 @@
                    (* 2 (+ (/ 2 17) (/ 3 16)))
                    (* 2 (+ (/ 1 17) (/ 2 16))))))}
   [{user-opinion-list :user-opinion-list party-opinion-list :party-opinion-list}]
-  ;; Sum of all question errors
-  )
+  (let [number-of-questions (count user-opinion-list)]
+    (reduce (fn [sum index]
+              (+ sum (calculate-question-error {:user-opinion-list  user-opinion-list
+                                                :party-opinion-list party-opinion-list
+                                                :index              index})))
+            0
+            (range number-of-questions))))
 
 (defn calculate-user-party-agreement
   "Takes all answers from a user and a party and calculates their agreement in %"
@@ -79,7 +92,12 @@
            (error? (calculate-user-party-agreement {:user-opinion-list  (conj user-opinion-test-list {:answer 1 :weight 1})
                                                     :party-opinion-list party-opinion-test-list})))}
   [{user-opinion-list :user-opinion-list party-opinion-list :party-opinion-list}]
-  ;; PRE: Lists have same length
-  ;; Function of total error
-  )
+  {:pre (= (count user-opinion-list) (count party-opinion-list))}
+  (- 100
+     (* 10 (calculate-total-error {:user-opinion-list  user-opinion-list
+                                   :party-opinion-list party-opinion-list}))))
 
+
+
+(comment (float (calculate-user-party-agreement {:user-opinion-list  user-opinion-test-list
+                                                 :party-opinion-list party-opinion-test-list})))
