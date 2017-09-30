@@ -1,8 +1,8 @@
-(ns hemsida.main
+(ns political-quiz.main
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [reagent.core :as reagent :refer [atom]]
             [cljs.core.async :refer [chan <!]]
-            [hemsida.components :as comp]))
+            [political-quiz.components :as comp]))
 
 (enable-console-print!)
 

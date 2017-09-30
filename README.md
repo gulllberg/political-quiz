@@ -1,39 +1,77 @@
-# hemsida
+# Political Quiz
 
-FIXME: Write a one-line description of your library/project.
+Be able to answer a political quiz to see how well your opinions matches the different political parties in Sweden.
 
-## Overview
+Similar to [this](www.partisk.nu).
 
-FIXME: Write a paragraph about the library/project and highlight its goals.
+## Requirements
 
-## Setup
+The requirements of the application.
 
-To get an interactive development environment run:
+#### First-level requirements
 
-    lein figwheel
+1. Each question should be a statement to which you can agree on a scale from 1-6 and rank importance on a scale from 1-6.
+2. The question should be answered by political parties as a reference, and by users who takes the test.
+3. Depending on answers you be given a score (0-100 %) for each party.
 
-and open your browser at [localhost:3449](http://localhost:3449/).
-This will auto compile and send all changes to the browser without the
-need to reload. After the compilation process is complete, you will
-get a Browser Connected REPL. An easy way to try it is:
+#### Second-level requirements
 
-    (js/alert "Am I connected?")
+Three different models will be tested. The user should be able to see the result of all models which make it into the final version.
 
-and you should see an alert in the browser window.
+__Notation__
 
-To clean all compiled files:
+A<sub>u</sub> = answer for user to a given question  
+A<sub>p</sub> = answer for a party to a given question
 
-    lein clean
+W<sub>u</sub> = weight for a question given by user  
+W<sub>p</sub> = weight for a question given by a party
 
-To create a production build run:
+RW<sub>u</sub> = relative weight for a question for user  
+RW<sub>p</sub> = relative weight for a question for a party  
+_Relative weight means W/W<sub>tot</sub>_
 
-    lein do clean, cljsbuild once min
+E = error on a question  
+E<sub>tot</sub> = total error
 
-And open your browser in `resources/public/index.html`. You will not
-get live reloading, nor a REPL. 
+__Model 1__
+
+E = abs(A<sub>u</sub> - A<sub>p</sub>) * (RW<sub>u</sub> + RW<sub>p</sub>)
+
+Max E<sub>tot</sub> = 10  
+Min E<sub>tot</sub> = 0  
+Quiz result = 100 - 10 * E<sub>tot</sub>
+
+Problem: Same answers but different weights means you might not get the highest score for the party where you agree most on the questions you consider most important.
+
+__Model 2__
+
+E = abs(A<sub>u</sub> - A<sub>p</sub>) * abs(W<sub>u</sub> - W<sub>p</sub>)
+
+Max E<sub>tot</sub> = 25 * number of questions  
+Min E<sub>tot</sub> = 0  
+Quiz result = 100 - 4 * E<sub>tot</sub> / number of questions
+
+Problem: Questions both consider less important affect the result as much as questions both consider important.  
+Problem 2: Different responses for weights affect the result as much as different answers. This is probably not what a user expects.
+
+__Model 3__
+
+E = abs(A<sub>u</sub> - A<sub>p</sub>) * abs(W<sub>u</sub> - W<sub>p</sub>) * (RW<sub>u</sub> + RW<sub>p</sub>) 
+
+Max E<sub>tot</sub> = 25 * 2  
+Min E<sub>tot</sub> = 0  
+Quiz result = 100 - 2 * E<sub>tot</sub>
+
+Problem: Different responses for weights affect the result as much as different answers. This is probably not what a user expects.
+
+#### Third-level (non-functional) requirements
+
+1. Should be fast and give instant feedback upon completing quiz
+2. Should look decent
+3. Should work in most browsers
 
 ## License
 
-Copyright © 2014 FIXME
+Copyright © 2017 Daniel Gullberg
 
-Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
+Distributed under the Eclipse Public License version 1.0

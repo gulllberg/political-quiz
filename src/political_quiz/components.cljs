@@ -1,4 +1,4 @@
-(ns hemsida.components
+(ns political-quiz.components
   (:require [cljs.core.async :refer [put!]]))
 
 (defn
