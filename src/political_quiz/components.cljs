@@ -78,7 +78,7 @@
   [{user-opinion-list :user-opinion-list party :party}]
   [:div
    [:h3 (:name party)]
-   [:div (str "Sympatisering: " (float (core/calculate-user-party-agreement {:user-opinion-list user-opinion-list :party-opinion-list (:opinion-list party)})) " %")]
+   [:div (str "Sympatisering: " (float (core/calculate-user-party-agreement {:user-opinion-list user-opinion-list :party-opinion-list (:opinion-list party) :method :1})) " %")]
    [:div (str "Dom svarade så här: " (:opinion-list party))]])
 
 (defn results-overview
